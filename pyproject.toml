@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "weatheralerting-iac"
+version = "0.1.0"
+description = "Infrastructure as a code for Weather Alerting system."
+authors = ["Piotr Bednarek, Dawid Karoński"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pulumi = "^3.58.0"
+pulumi-aws = "^5.31.0"
+black = "^23.1.0"
+
+[tool.black]
+line-length = 120
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

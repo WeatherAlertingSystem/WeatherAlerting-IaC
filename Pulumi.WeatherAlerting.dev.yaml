@@ -2,3 +2,16 @@ secretsprovider: awskms://alias/PulumiSecretsProvider?region=eu-central-1
 encryptedkey: AQICAHhJALVlTXRpe+U8ZZcLsWolEfyFsTtOXwsy9xakG45kvgFsZLsZ5ff8Y0lpvaIaMauhAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM5fRDCIiRg5AViDN0AgEQgDsAhwIHnlrLkhIj2dOSeIUveN8rn2au4xbGTEWaTZXBfds2H7C9DuVKw74Jwfoh7ghWnxO85X651M4VdA==
 config:
   aws:region: eu-central-1
+  backend:app_runner_auto_deployment: "true"
+  backend:app_runner_cpu: "1024"
+  backend:app_runner_memory: "2048"
+  backend:auto_scaling_max_instances: "1"
+  backend:ecr_repo_force_destroy: "true"
+  common:account_id:
+    secure: v1:e+VBhKc8TwMiCx5U:F9Rc4K4PUFgDQHrGa4ilpHbzqxoXDaiGyZCECQ==
+  common:private_subnets_id_list:
+    - secure: v1:GLRQxjsOiipM5fnZ:/DVbKyu7LS4URnV1agdENWL2/YUmz8Vwo7GbQsCyWJ+6FqRIjCUNPA==
+    - secure: v1:jrtONRlDfPf2TOPH:lVmtFtZ2lQFRsFPtdEhlmrtNPv/GmpmV1xCNRNu21T88SVnNo+CRJg==
+    - secure: v1:HJeZuT8/pJatDut3:OwR7Wvzj15kKodkEVfb3p26uL4G91+HNhXCP7HKyOuBrqkL+QmLPpQ==
+  common:vpc_id:
+    secure: v1:lTCwm2vXIU/She6F:jA3JrRWaQc7GUzQh5pATZIUfQuxRqKB7Prag2PuheHztip1kHQ==

@@ -3,4 +3,6 @@ encryptedkey: AQICAHhJALVlTXRpe+U8ZZcLsWolEfyFsTtOXwsy9xakG45kvgFsZLsZ5ff8Y0lpva
 config:
   WeatherAlerting:account_id: "163636840347"
   aws:region: eu-central-1
+  frontend:bucket_name: 163636840347-weather-alerting-frontend
+  frontend:repository: WeatherAlertingSystem/WeatherAlerting-Frontend
   frontend:s3_force_destroy: "True"

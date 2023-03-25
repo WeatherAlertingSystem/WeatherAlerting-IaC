@@ -1,6 +1,12 @@
 """An AWS Python Pulumi program"""
 
 # Import custom modules
-import frontend_s3
+from frontend_s3 import Frontend
 
-frontend_s3.create_frontend_bucket()
+# Backend resources
+# ...
+
+# Frontend resources
+frontend = Frontend()
+frontend.create_frontend_bucket()
+frontend.authorize_github_to_deploy()

@@ -5,13 +5,9 @@ config:
   backend:app_runner_auto_deployment: "true"
   backend:app_runner_cpu: "1024"
   backend:app_runner_memory: "2048"
+  backend:port: 3000
   backend:auto_scaling_max_instances: "1"
-  backend:ecr_repo_force_destroy: "true"
+  backend:ecr_uri: "163636840347.dkr.ecr.eu-central-1.amazonaws.com/backend"
+  backend:github_repository: "WeatherAlertingSystem/WeatherAlerting-Backend"
   common:account_id:
     secure: v1:e+VBhKc8TwMiCx5U:F9Rc4K4PUFgDQHrGa4ilpHbzqxoXDaiGyZCECQ==
-  common:private_subnets_id_list:
-    - secure: v1:GLRQxjsOiipM5fnZ:/DVbKyu7LS4URnV1agdENWL2/YUmz8Vwo7GbQsCyWJ+6FqRIjCUNPA==
-    - secure: v1:jrtONRlDfPf2TOPH:lVmtFtZ2lQFRsFPtdEhlmrtNPv/GmpmV1xCNRNu21T88SVnNo+CRJg==
-    - secure: v1:HJeZuT8/pJatDut3:OwR7Wvzj15kKodkEVfb3p26uL4G91+HNhXCP7HKyOuBrqkL+QmLPpQ==
-  common:vpc_id:
-    secure: v1:lTCwm2vXIU/She6F:jA3JrRWaQc7GUzQh5pATZIUfQuxRqKB7Prag2PuheHztip1kHQ==

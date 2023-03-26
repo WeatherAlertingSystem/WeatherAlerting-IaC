@@ -7,3 +7,5 @@ from backend import Backend
 register_auto_tags({"PROJECT": "WeatherAlertingSystem"})
 
 backend = Backend()
+backend.grant_access_rights_for_gh_actions("Backend")
+backend.create_app_runner()

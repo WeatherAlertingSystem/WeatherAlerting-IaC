@@ -1,4 +1,8 @@
 secretsprovider: awskms://alias/PulumiSecretsProvider?region=eu-central-1
 encryptedkey: AQICAHhJALVlTXRpe+U8ZZcLsWolEfyFsTtOXwsy9xakG45kvgFsZLsZ5ff8Y0lpvaIaMauhAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM5fRDCIiRg5AViDN0AgEQgDsAhwIHnlrLkhIj2dOSeIUveN8rn2au4xbGTEWaTZXBfds2H7C9DuVKw74Jwfoh7ghWnxO85X651M4VdA==
 config:
+  WeatherAlerting:account_id: "163636840347"
   aws:region: eu-central-1
+  frontend:bucket_name: 163636840347-weather-alerting-frontend
+  frontend:repository: WeatherAlertingSystem/WeatherAlerting-Frontend
+  frontend:s3_force_destroy: "True"

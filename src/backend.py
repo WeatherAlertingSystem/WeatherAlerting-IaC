@@ -8,18 +8,11 @@ import pulumi_aws as aws
 
 class Backend:
     def __init__(self):
-        self.common_config = pulumi.Config("common")
+        self.common_config = pulumi.Config("WeatherAlerting")
         self.backend_config = pulumi.Config("backend")
         self.account_id = self.common_config.require_secret_int("account_id")
 
-    def grant_access_rights_for_gh_actions(self, repo_name):
-        github_open_id_provider = aws.iam.OpenIdConnectProvider(
-            f"{repo_name}GithubProvider",
-            client_id_lists=["sts.amazonaws.com"],
-            thumbprint_lists=["6938fd4d98bab03faadb97b34396831e3780aea1"],
-            url="https://token.actions.githubusercontent.com",
-        )
-
+    def grant_access_rights_for_gh_actions(self, repo_name, github_open_id_provider):
         backend_deployer_role = aws.iam.Role(
             f"{repo_name}GithubActionsRole",
             name=f"{repo_name}GithubActionsRole",
@@ -38,7 +31,7 @@ class Backend:
                             aws.iam.GetPolicyDocumentStatementConditionArgs(
                                 test="StringLike",
                                 variable="token.actions.githubusercontent.com:sub",
-                                values=[f"repo:{self.backend_config.require('github_repository')}:*"],
+                                values=[f"repo:{self.backend_config.require('repository')}:*"],
                             )
                         ],
                     )
@@ -123,6 +116,12 @@ class Backend:
         aws.apprunner.Service(
             resource_name="AppRunnerService",
             service_name="AppRunnerService",
+            auto_scaling_configuration_arn=aws.apprunner.AutoScalingConfigurationVersion(
+                resource_name="AppRunnerAutoScalingConfig",
+                auto_scaling_configuration_name="AppRunnerAutoScalingConfig",
+                min_size=1,
+                max_size=self.backend_config.require_int("auto_scaling_max_instances"),
+            ).arn,
             source_configuration=aws.apprunner.ServiceSourceConfigurationArgs(
                 authentication_configuration=aws.apprunner.ServiceSourceConfigurationAuthenticationConfigurationArgs(
                     # Workaround due to pulumi-aws bug: https://github.com/pulumi/pulumi-aws/issues/1697
@@ -138,7 +137,7 @@ class Backend:
                 auto_deployments_enabled=self.backend_config.require_bool("app_runner_auto_deployment"),
             ),
             instance_configuration=aws.apprunner.ServiceInstanceConfigurationArgs(
-                cpu=self.backend_config.require("app_runner_cpu"),
-                memory=self.backend_config.require("app_runner_memory"),
+                cpu=self.backend_config.require_int("app_runner_cpu"),
+                memory=self.backend_config.require_int("app_runner_memory"),
             ),
         )

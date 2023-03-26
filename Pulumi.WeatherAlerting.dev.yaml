@@ -1,13 +1,15 @@
 secretsprovider: awskms://alias/PulumiSecretsProvider?region=eu-central-1
 encryptedkey: AQICAHhJALVlTXRpe+U8ZZcLsWolEfyFsTtOXwsy9xakG45kvgFsZLsZ5ff8Y0lpvaIaMauhAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM5fRDCIiRg5AViDN0AgEQgDsAhwIHnlrLkhIj2dOSeIUveN8rn2au4xbGTEWaTZXBfds2H7C9DuVKw74Jwfoh7ghWnxO85X651M4VdA==
 config:
+  WeatherAlerting:account_id: "163636840347"
   aws:region: eu-central-1
-  backend:app_runner_auto_deployment: "true"
-  backend:app_runner_cpu: "1024"
-  backend:app_runner_memory: "2048"
+  backend:app_runner_auto_deployment: True
+  backend:app_runner_cpu: 1024
+  backend:app_runner_memory: 2048
   backend:port: 3000
-  backend:auto_scaling_max_instances: "1"
-  backend:ecr_uri: "163636840347.dkr.ecr.eu-central-1.amazonaws.com/backend"
-  backend:github_repository: "WeatherAlertingSystem/WeatherAlerting-Backend"
-  common:account_id:
-    secure: v1:e+VBhKc8TwMiCx5U:F9Rc4K4PUFgDQHrGa4ilpHbzqxoXDaiGyZCECQ==
+  backend:auto_scaling_max_instances: 1
+  backend:ecr_uri: 163636840347.dkr.ecr.eu-central-1.amazonaws.com/backend
+  backend:repository: WeatherAlertingSystem/WeatherAlerting-Backend
+  frontend:bucket_name: 163636840347-weather-alerting-frontend
+  frontend:repository: WeatherAlertingSystem/WeatherAlerting-Frontend
+  frontend:s3_force_destroy: True

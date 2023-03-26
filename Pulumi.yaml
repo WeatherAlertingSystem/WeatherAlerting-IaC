@@ -1,5 +1,5 @@
 name: WeatherAlerting
-main: ./src
+main: ./src/
 runtime:
   name: python
   options:

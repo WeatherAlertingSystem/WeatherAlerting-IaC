@@ -7,7 +7,6 @@ import pulumi_aws as aws
 class Frontend:
     def __init__(self):
         self.frontend_config = pulumi.Config("frontend")
-        pass
 
     # Create an AWS resource (S3 Bucket)
     def create_frontend_bucket(self):
@@ -29,7 +28,6 @@ class Frontend:
                     """,
             ),
             force_destroy=self.frontend_config.require_bool("s3_force_destroy"),
-            tags={"PROJECT": "WeatherAlertingSystem"},
         )
         return bucket
 

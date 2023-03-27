@@ -3,6 +3,13 @@ encryptedkey: AQICAHhJALVlTXRpe+U8ZZcLsWolEfyFsTtOXwsy9xakG45kvgFsZLsZ5ff8Y0lpva
 config:
   WeatherAlerting:account_id: "163636840347"
   aws:region: eu-central-1
+  backend:app_runner_auto_deployment: True
+  backend:app_runner_cpu: 1024
+  backend:app_runner_memory: 2048
+  backend:port: 3000
+  backend:auto_scaling_max_instances: 1
+  backend:ecr_uri: 163636840347.dkr.ecr.eu-central-1.amazonaws.com/backend
+  backend:repository: WeatherAlertingSystem/WeatherAlerting-Backend
   frontend:bucket_name: 163636840347-weather-alerting-frontend
   frontend:repository: WeatherAlertingSystem/WeatherAlerting-Frontend
-  frontend:s3_force_destroy: "True"
+  frontend:s3_force_destroy: True

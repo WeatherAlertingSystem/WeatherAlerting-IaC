@@ -47,15 +47,7 @@ class Frontend:
         ).json
         return frontend_public_get_object_policy
 
-    def authorize_github_to_deploy(self):
-        # This can be later moved out of frontend as this provider is not strictly associated to it
-        github_open_id_provider = aws.iam.OpenIdConnectProvider(
-            "GitHubProvider",
-            client_id_lists=["sts.amazonaws.com"],
-            thumbprint_lists=["6938fd4d98bab03faadb97b34396831e3780aea1"],
-            url="https://token.actions.githubusercontent.com",
-        )
-
+    def authorize_github_to_deploy(self, github_open_id_provider):
         # Policy config allowing to Deploy to S3 Frontend Bucket (Put Object)
         deploy_policy_json = aws.iam.get_policy_document(
             statements=[
@@ -73,7 +65,8 @@ class Frontend:
 
         deploy_policy_resource = aws.iam.Policy(
             "AmazonS3PutFrontendBucket",
-            description="Allows to put files into 163636840347-weather-alerting-frontend S3 Bucket. Policy made for github actions - deploy job",
+            description="Allows to put files into 163636840347-weather-alerting-frontend S3 Bucket."
+            " Policy made for github actions - deploy job",
             policy=deploy_policy_json,
         )
 
@@ -111,6 +104,6 @@ class Frontend:
         )
 
         # Attach the created policy to the role
-        policy_to_role_attachment = aws.iam.RolePolicyAttachment(
+        aws.iam.RolePolicyAttachment(
             "S3PutObjectPolicyAttachment", role=frontend_deployer_role.name, policy_arn=deploy_policy_resource.arn
         )

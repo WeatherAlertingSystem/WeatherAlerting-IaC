@@ -7,6 +7,7 @@ import pulumi_aws as aws
 class Frontend:
     def __init__(self):
         self.frontend_config = pulumi.Config("frontend")
+        self.s3_bucket = None
 
     # Create an AWS resource (S3 Bucket)
     def create_frontend_bucket(self):
@@ -29,7 +30,22 @@ class Frontend:
             ),
             force_destroy=self.frontend_config.require_bool("s3_force_destroy"),
         )
+        self.s3_bucket = bucket
         return bucket
+
+    def render_config_to_s3_bucket(self, backend_uri):
+        config_content = backend_uri.apply(
+            lambda uri: f"""
+            {{
+                \"backendApiUrl\": \"https://{uri}\"
+            }}
+            """
+        )
+        aws.s3.BucketObject(
+            resource_name="assets/config.json",
+            bucket=self.s3_bucket,
+            content=config_content,
+        )
 
     def create_s3_frontend_policy(self):
         frontend_public_get_object_policy = aws.iam.get_policy_document(

@@ -1,4 +1,5 @@
 """An AWS Python Pulumi program - S3 Bucket initialization for Angular Frontend"""
+import json
 
 import pulumi
 import pulumi_aws as aws
@@ -34,13 +35,7 @@ class Frontend:
         return bucket
 
     def render_config_to_s3_bucket(self, backend_uri):
-        config_content = backend_uri.apply(
-            lambda uri: f"""
-            {{
-                \"backendApiUrl\": \"https://{uri}\"
-            }}
-            """
-        )
+        config_content = backend_uri.apply(lambda uri: json.dumps({"backendApiUrl": f"https://{uri}"}))
         aws.s3.BucketObject(
             resource_name="assets/config.json",
             bucket=self.s3_bucket,

@@ -11,6 +11,7 @@ class Backend:
         self.common_config = pulumi.Config("WeatherAlerting")
         self.backend_config = pulumi.Config("backend")
         self.account_id = self.common_config.require_secret_int("account_id")
+        self.app_runner_uri = None
 
     def grant_access_rights_for_gh_actions(self, repo_name, github_open_id_provider):
         backend_deployer_role = aws.iam.Role(
@@ -113,7 +114,7 @@ class Backend:
         return role
 
     def create_app_runner(self):
-        aws.apprunner.Service(
+        app_runner = aws.apprunner.Service(
             resource_name="AppRunnerService",
             service_name="AppRunnerService",
             auto_scaling_configuration_arn=aws.apprunner.AutoScalingConfigurationVersion(
@@ -141,3 +142,4 @@ class Backend:
                 memory=self.backend_config.require_int("app_runner_memory"),
             ),
         )
+        self.app_runner_uri = app_runner.service_url

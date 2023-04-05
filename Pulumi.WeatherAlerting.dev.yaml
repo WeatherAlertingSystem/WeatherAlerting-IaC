@@ -11,15 +11,15 @@ config:
   WeatherAlerting:default_vpc:
     secure: v1:sCSi4rR+dGWXhtnE:IZgrAMaqEWh99WidKKBNrp2FAw6JaUhUSsSRARVqBkloPDhw7g==
   aws:region: eu-central-1
-  backend:app_runner_auto_deployment: "true"
-  backend:app_runner_cpu: "1024"
-  backend:app_runner_memory: "2048"
-  backend:auto_scaling_max_instances: "1"
+  backend:app_runner_auto_deployment: True
+  backend:app_runner_cpu: 1024
+  backend:app_runner_memory: 2048
+  backend:auto_scaling_max_instances: 1
   backend:ecr_uri: 163636840347.dkr.ecr.eu-central-1.amazonaws.com/backend
-  backend:port: "3000"
+  backend:port: 3000
   backend:repository: WeatherAlertingSystem/WeatherAlerting-Backend
   database:instance_class: db.t3.medium
-  database:instances_number: "1"
+  database:instances_number: 1
   database:mongodb_version: 3.6.0
   database:password:
     secure: v1:avVsLXeT6TyauIEN:QfKDy1P6GuK3q2U80vgQZN70YzPlMs590zz9nDtJ4hrJQymrnw==
@@ -27,4 +27,4 @@ config:
     secure: v1:m9Z/8XD3wPWQqJIR:srL1lyqA2q1n+PbmBaj8SCvpybpsHh8Os9x3a48=
   frontend:bucket_name: 163636840347-weather-alerting-frontend
   frontend:repository: WeatherAlertingSystem/WeatherAlerting-Frontend
-  frontend:s3_force_destroy: "true"
+  frontend:s3_force_destroy: True

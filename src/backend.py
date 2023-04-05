@@ -1,5 +1,6 @@
 """An AWS Python Pulumi program - App runner for Backend"""
 
+import ast
 import time
 
 import pulumi
@@ -12,6 +13,7 @@ class Backend:
         self.backend_config = pulumi.Config("backend")
         self.account_id = self.common_config.require_secret_int("account_id")
         self.app_runner_uri = None
+        self.list_of_vpc_subnets = ast.literal_eval(self.common_config.require("default_subnets_list"))
 
     def grant_access_rights_for_gh_actions(self, repo_name, github_open_id_provider):
         backend_deployer_role = aws.iam.Role(
@@ -113,7 +115,46 @@ class Backend:
         )
         return role
 
-    def create_app_runner(self):
+    def create_app_runner_vpc_connector(self):
+        return aws.apprunner.VpcConnector(
+            "AppRunnerVPCConnector",
+            vpc_connector_name="AppRunnerVPCConnector",
+            security_groups=[self.common_config.require("default_security_group")],
+            subnets=[
+                self.list_of_vpc_subnets[0],
+                self.list_of_vpc_subnets[1],
+                self.list_of_vpc_subnets[2],
+            ],
+        )
+
+    def create_instance_role_arn(self):
+        role = aws.iam.Role(
+            resource_name="AppRunnerAccessToInstance",
+            name="AppRunnerAccessToInstance",
+            assume_role_policy=aws.iam.get_policy_document(
+                statements=[
+                    aws.iam.GetPolicyDocumentStatementArgs(
+                        actions=["sts:AssumeRole"],
+                        effect="Allow",
+                        principals=[
+                            aws.iam.GetPolicyDocumentStatementPrincipalArgs(
+                                type="Service",
+                                identifiers=["tasks.apprunner.amazonaws.com"],
+                            )
+                        ],
+                    )
+                ]
+            ).json,
+        )
+        # Attach AppRunner Policy to Instance role.
+        aws.iam.RolePolicyAttachment(
+            resource_name="AppRunnerAccessPolicy",
+            role=role,
+            policy_arn="arn:aws:iam::aws:policy/AWSAppRunnerFullAccess",
+        )
+        return role
+
+    def create_app_runner(self, database_uri, database_username, database_password):
         app_runner = aws.apprunner.Service(
             resource_name="AppRunnerService",
             service_name="AppRunnerService",
@@ -132,14 +173,32 @@ class Backend:
                     image_identifier=f"{self.backend_config.require('ecr_uri')}:latest",
                     image_repository_type="ECR",
                     image_configuration=aws.apprunner.ServiceSourceConfigurationImageRepositoryImageConfigurationArgs(
-                        port=self.backend_config.require_int("port")
+                        port=self.backend_config.require_int("port"),
+                        runtime_environment_variables=pulumi.Output.all(
+                            database_uri, database_username, database_password
+                        ).apply(
+                            lambda args: {
+                                "DB_HOST": f"{args[0]}",
+                                "DB_USERNAME": f"{args[1]}",
+                                "DB_PASSWORD": f"{args[2]}",
+                                "DB_SSL": "true",
+                                "DB_SSL_CA_FILE_PATH": "/etc/ssl/rds-combined-ca-bundle.pem",
+                            }
+                        ),
                     ),
                 ),
                 auto_deployments_enabled=self.backend_config.require_bool("app_runner_auto_deployment"),
             ),
+            network_configuration=aws.apprunner.ServiceNetworkConfigurationArgs(
+                egress_configuration=aws.apprunner.ServiceNetworkConfigurationEgressConfigurationArgs(
+                    egress_type="VPC",
+                    vpc_connector_arn=self.create_app_runner_vpc_connector().arn,
+                )
+            ),
             instance_configuration=aws.apprunner.ServiceInstanceConfigurationArgs(
                 cpu=self.backend_config.require_int("app_runner_cpu"),
                 memory=self.backend_config.require_int("app_runner_memory"),
+                instance_role_arn=self.create_instance_role_arn().arn,
             ),
         )
         self.app_runner_uri = app_runner.service_url

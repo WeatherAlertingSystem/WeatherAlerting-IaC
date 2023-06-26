@@ -11,15 +11,32 @@ config:
   WeatherAlerting:default_vpc:
     secure: v1:sCSi4rR+dGWXhtnE:IZgrAMaqEWh99WidKKBNrp2FAw6JaUhUSsSRARVqBkloPDhw7g==
   aws:region: eu-central-1
-  backend:app_runner_auto_deployment: True
-  backend:app_runner_cpu: 1024
-  backend:app_runner_memory: 2048
-  backend:auto_scaling_max_instances: 1
+  backend:app_runner_auto_deployment: "true"
+  backend:app_runner_cpu: "1024"
+  backend:app_runner_memory: "2048"
+  backend:auto_scaling_max_instances: "1"
+  backend:cron_config: "* * * * *"
   backend:ecr_uri: 163636840347.dkr.ecr.eu-central-1.amazonaws.com/backend
-  backend:port: 3000
+  backend:hash_salt:
+    secure: v1:6wT7KC4sI+XwonUY:RYooxBHAOJe4clZQm4ca53pjmogaAQxdDqHyvEGAZuTcNySTlFA=
+  backend:jwt_secret:
+    secure: v1:jGsl2KHVfgQcw05y:MXonnLo+S2G8nrrk7585BUXpY92NgEsOSjmB
+  backend:log_level: "debug"
+  backend:port: "3000"
   backend:repository: WeatherAlertingSystem/WeatherAlerting-Backend
+  backend:send_emails: "true"
+  backend:smtp_host: "poczta.horyzont.eu"
+  backend:smtp_password:
+    secure: v1:VARNR5zkWSDPttLT:QR6jyO9E2kJTMMWipQL6flDuZ824Ch8Q
+  backend:smtp_port: "587"
+  backend:smtp_require_tls: "true"
+  backend:smtp_secure: "false"
+  backend:smtp_user:
+    secure: v1:RTi6XtwZnZYZ2SR5:T4eZd4ZGXwoiREXvH7RVO+jQMEHn
+  backend:weatherapi_apikey:
+    secure: v1:OLRMHjtAoovlN4qV:c32xEKcQGXt+YUb2mceduFHN6/zdhc+dwHLZjwqzGLYuHF7LTaEzUfmkNINddPwp
   database:instance_class: db.t3.medium
-  database:instances_number: 1
+  database:instances_number: "1"
   database:mongodb_version: 3.6.0
   database:password:
     secure: v1:avVsLXeT6TyauIEN:QfKDy1P6GuK3q2U80vgQZN70YzPlMs590zz9nDtJ4hrJQymrnw==
@@ -27,4 +44,4 @@ config:
     secure: v1:m9Z/8XD3wPWQqJIR:srL1lyqA2q1n+PbmBaj8SCvpybpsHh8Os9x3a48=
   frontend:bucket_name: 163636840347-weather-alerting-frontend
   frontend:repository: WeatherAlertingSystem/WeatherAlerting-Frontend
-  frontend:s3_force_destroy: True
+  frontend:s3_force_destroy: "true"

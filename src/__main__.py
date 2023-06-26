@@ -32,5 +32,6 @@ backend.create_app_runner(
 # Frontend resources
 frontend = Frontend()
 frontend.create_frontend_bucket()
+frontend.attach_policies()
 frontend.render_config_to_s3_bucket(backend_uri=backend.app_runner_uri)
 frontend.authorize_github_to_deploy(github_open_id_provider=open_id_provider)

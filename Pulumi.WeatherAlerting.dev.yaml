@@ -3,13 +3,7 @@ encryptedkey: AQICAHhJALVlTXRpe+U8ZZcLsWolEfyFsTtOXwsy9xakG45kvgFsZLsZ5ff8Y0lpva
 config:
   WeatherAlerting:account_id: "163636840347"
   WeatherAlerting:default_security_group:
-    secure: v1:zCtMYusnMcUZH9h3:Ta/IKKuCP2Ww6rOIjgjiRvZ4B8B25Ds2l2kAiF/RpBuIK+rT
-  WeatherAlerting:default_subnets_list:
-    - secure: v1:TUKgZufvJ16wuhBk:xaxU183NW0poYiO0bcEOap7WQGgCzhxVrsS53UkHyRRQCSvd3AaLVg==
-    - secure: v1:JptSEo9PSdeLWB0q:4bBrS6vQRMyuFC9H8XXoPe4hC/+Qo2GnGO9j+cnGvpAYLnDNLhp1Qg==
-    - secure: v1:bwJE6MVn+kG/6EuY:tcRmwJHVfFiay0BH4O+HjKuyuDczIvbh8jYk5xJ4p8P/sM4Iu5ncng==
-  WeatherAlerting:default_vpc:
-    secure: v1:sCSi4rR+dGWXhtnE:IZgrAMaqEWh99WidKKBNrp2FAw6JaUhUSsSRARVqBkloPDhw7g==
+    secure: v1:+5p3mV0G7NcAeM8n:pLGUQDK6kHFoUlFaltbXrTomblMwDS+B7/myVLkkrm5RHwdk
   aws:region: eu-central-1
   backend:app_runner_auto_deployment: "true"
   backend:app_runner_cpu: "1024"
@@ -18,7 +12,7 @@ config:
   backend:cron_config: "* * * * *"
   backend:ecr_uri: 163636840347.dkr.ecr.eu-central-1.amazonaws.com/backend
   backend:hash_salt:
-    secure: v1:6wT7KC4sI+XwonUY:RYooxBHAOJe4clZQm4ca53pjmogaAQxdDqHyvEGAZuTcNySTlFA=
+    secure: v1:1yvp2aPqbEmQ6dGv:ClHaJX+YIx3Yf/JMupsd3s5/469616zJeybrBN94q95bT8spBAW+dx6Jwi3V
   backend:jwt_secret:
     secure: v1:jGsl2KHVfgQcw05y:MXonnLo+S2G8nrrk7585BUXpY92NgEsOSjmB
   backend:log_level: "debug"

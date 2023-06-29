@@ -1,6 +1,5 @@
 """An AWS Python Pulumi program - App runner for Backend"""
 
-import ast
 import time
 
 import pulumi
@@ -8,12 +7,13 @@ import pulumi_aws as aws
 
 
 class Backend:
-    def __init__(self):
+    def __init__(self, list_of_vpc_subnets, vpc_default_sg):
         self.common_config = pulumi.Config("WeatherAlerting")
         self.backend_config = pulumi.Config("backend")
         self.account_id = self.common_config.require_secret_int("account_id")
         self.app_runner_uri = None
-        self.list_of_vpc_subnets = ast.literal_eval(self.common_config.require("default_subnets_list"))
+        self.list_of_vpc_subnets = list_of_vpc_subnets
+        self.vpc_default_sg = vpc_default_sg
 
     def grant_access_rights_for_gh_actions(self, repo_name, github_open_id_provider):
         backend_deployer_role = aws.iam.Role(
@@ -119,12 +119,8 @@ class Backend:
         return aws.apprunner.VpcConnector(
             "AppRunnerVPCConnector",
             vpc_connector_name="AppRunnerVPCConnector",
-            security_groups=[self.common_config.require("default_security_group")],
-            subnets=[
-                self.list_of_vpc_subnets[0],
-                self.list_of_vpc_subnets[1],
-                self.list_of_vpc_subnets[2],
-            ],
+            security_groups=[self.vpc_default_sg],
+            subnets=self.list_of_vpc_subnets,
         )
 
     def create_instance_role_arn(self):

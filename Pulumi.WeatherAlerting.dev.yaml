@@ -3,23 +3,34 @@ encryptedkey: AQICAHhJALVlTXRpe+U8ZZcLsWolEfyFsTtOXwsy9xakG45kvgFsZLsZ5ff8Y0lpva
 config:
   WeatherAlerting:account_id: "163636840347"
   WeatherAlerting:default_security_group:
-    secure: v1:zCtMYusnMcUZH9h3:Ta/IKKuCP2Ww6rOIjgjiRvZ4B8B25Ds2l2kAiF/RpBuIK+rT
-  WeatherAlerting:default_subnets_list:
-    - secure: v1:TUKgZufvJ16wuhBk:xaxU183NW0poYiO0bcEOap7WQGgCzhxVrsS53UkHyRRQCSvd3AaLVg==
-    - secure: v1:JptSEo9PSdeLWB0q:4bBrS6vQRMyuFC9H8XXoPe4hC/+Qo2GnGO9j+cnGvpAYLnDNLhp1Qg==
-    - secure: v1:bwJE6MVn+kG/6EuY:tcRmwJHVfFiay0BH4O+HjKuyuDczIvbh8jYk5xJ4p8P/sM4Iu5ncng==
-  WeatherAlerting:default_vpc:
-    secure: v1:sCSi4rR+dGWXhtnE:IZgrAMaqEWh99WidKKBNrp2FAw6JaUhUSsSRARVqBkloPDhw7g==
+    secure: v1:+5p3mV0G7NcAeM8n:pLGUQDK6kHFoUlFaltbXrTomblMwDS+B7/myVLkkrm5RHwdk
   aws:region: eu-central-1
-  backend:app_runner_auto_deployment: True
-  backend:app_runner_cpu: 1024
-  backend:app_runner_memory: 2048
-  backend:auto_scaling_max_instances: 1
+  backend:app_runner_auto_deployment: "true"
+  backend:app_runner_cpu: "1024"
+  backend:app_runner_memory: "2048"
+  backend:auto_scaling_max_instances: "1"
+  backend:cron_config: "* * * * *"
   backend:ecr_uri: 163636840347.dkr.ecr.eu-central-1.amazonaws.com/backend
-  backend:port: 3000
+  backend:hash_salt:
+    secure: v1:1yvp2aPqbEmQ6dGv:ClHaJX+YIx3Yf/JMupsd3s5/469616zJeybrBN94q95bT8spBAW+dx6Jwi3V
+  backend:jwt_secret:
+    secure: v1:jGsl2KHVfgQcw05y:MXonnLo+S2G8nrrk7585BUXpY92NgEsOSjmB
+  backend:log_level: "debug"
+  backend:port: "3000"
   backend:repository: WeatherAlertingSystem/WeatherAlerting-Backend
+  backend:send_emails: "true"
+  backend:smtp_host: "poczta.horyzont.eu"
+  backend:smtp_password:
+    secure: v1:VARNR5zkWSDPttLT:QR6jyO9E2kJTMMWipQL6flDuZ824Ch8Q
+  backend:smtp_port: "587"
+  backend:smtp_require_tls: "true"
+  backend:smtp_secure: "false"
+  backend:smtp_user:
+    secure: v1:RTi6XtwZnZYZ2SR5:T4eZd4ZGXwoiREXvH7RVO+jQMEHn
+  backend:weatherapi_apikey:
+    secure: v1:OLRMHjtAoovlN4qV:c32xEKcQGXt+YUb2mceduFHN6/zdhc+dwHLZjwqzGLYuHF7LTaEzUfmkNINddPwp
   database:instance_class: db.t3.medium
-  database:instances_number: 1
+  database:instances_number: "1"
   database:mongodb_version: 3.6.0
   database:password:
     secure: v1:avVsLXeT6TyauIEN:QfKDy1P6GuK3q2U80vgQZN70YzPlMs590zz9nDtJ4hrJQymrnw==
@@ -27,4 +38,4 @@ config:
     secure: v1:m9Z/8XD3wPWQqJIR:srL1lyqA2q1n+PbmBaj8SCvpybpsHh8Os9x3a48=
   frontend:bucket_name: 163636840347-weather-alerting-frontend
   frontend:repository: WeatherAlertingSystem/WeatherAlerting-Frontend
-  frontend:s3_force_destroy: True
+  frontend:s3_force_destroy: "true"

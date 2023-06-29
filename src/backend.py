@@ -1,6 +1,5 @@
 """An AWS Python Pulumi program - App runner for Backend"""
 
-import ast
 import time
 
 import pulumi
@@ -8,12 +7,13 @@ import pulumi_aws as aws
 
 
 class Backend:
-    def __init__(self):
+    def __init__(self, list_of_vpc_subnets, vpc_default_sg):
         self.common_config = pulumi.Config("WeatherAlerting")
         self.backend_config = pulumi.Config("backend")
         self.account_id = self.common_config.require_secret_int("account_id")
         self.app_runner_uri = None
-        self.list_of_vpc_subnets = ast.literal_eval(self.common_config.require("default_subnets_list"))
+        self.list_of_vpc_subnets = list_of_vpc_subnets
+        self.vpc_default_sg = vpc_default_sg
 
     def grant_access_rights_for_gh_actions(self, repo_name, github_open_id_provider):
         backend_deployer_role = aws.iam.Role(
@@ -119,12 +119,8 @@ class Backend:
         return aws.apprunner.VpcConnector(
             "AppRunnerVPCConnector",
             vpc_connector_name="AppRunnerVPCConnector",
-            security_groups=[self.common_config.require("default_security_group")],
-            subnets=[
-                self.list_of_vpc_subnets[0],
-                self.list_of_vpc_subnets[1],
-                self.list_of_vpc_subnets[2],
-            ],
+            security_groups=[self.vpc_default_sg],
+            subnets=self.list_of_vpc_subnets,
         )
 
     def create_instance_role_arn(self):
@@ -175,7 +171,14 @@ class Backend:
                     image_configuration=aws.apprunner.ServiceSourceConfigurationImageRepositoryImageConfigurationArgs(
                         port=self.backend_config.require_int("port"),
                         runtime_environment_variables=pulumi.Output.all(
-                            database_uri, database_username, database_password
+                            database_uri,
+                            database_username,
+                            database_password,
+                            self.backend_config.require_secret("weatherapi_apikey"),
+                            self.backend_config.require_secret("hash_salt"),
+                            self.backend_config.require_secret("jwt_secret"),
+                            self.backend_config.require_secret("smtp_user"),
+                            self.backend_config.require_secret("smtp_password"),
                         ).apply(
                             lambda args: {
                                 "DB_HOST": f"{args[0]}",
@@ -183,6 +186,18 @@ class Backend:
                                 "DB_PASSWORD": f"{args[2]}",
                                 "DB_SSL": "true",
                                 "DB_SSL_CA_FILE_PATH": "/etc/ssl/rds-combined-ca-bundle.pem",
+                                "WEATHERAPI_APIKEY": f"{args[3]}",
+                                "LOG_LEVEL": f"{self.backend_config.require('log_level')}",
+                                "HASH_SALT": f"{args[4]}",
+                                "JWT_SECRET": f"{args[5]}",
+                                "SMTP_HOST": f"{self.backend_config.require('smtp_host')}",
+                                "SMTP_PORT": f"{self.backend_config.require('smtp_port')}",
+                                "SMTP_USER": f"{args[6]}",
+                                "SMTP_PASSWORD": f"{args[7]}",
+                                "SMTP_SECURE": f"{self.backend_config.require('smtp_secure')}",
+                                "SMTP_REQUIRE_TLS": f"{self.backend_config.require('smtp_require_tls')}",
+                                "CRON_CONFIG": f"{self.backend_config.require('cron_config')}",
+                                "SEND_EMAILS": f"{self.backend_config.require('send_emails')}",
                             }
                         ),
                     ),

@@ -15,10 +15,9 @@ class Frontend:
         bucket = aws.s3.Bucket(
             self.frontend_config.require("bucket_name"),
             bucket=self.frontend_config.require("bucket_name"),
-            acl="public-read",
-            policy=self.create_s3_frontend_policy(),
             website=aws.s3.BucketWebsiteArgs(
                 index_document="index.html",
+                error_document="index.html",
                 routing_rules="""[{
                     "Condition": {
                         "KeyPrefixEquals": "docs/"
@@ -31,8 +30,31 @@ class Frontend:
             ),
             force_destroy=self.frontend_config.require_bool("s3_force_destroy"),
         )
+        # Set ownership controls for the new bucket
+        aws.s3.BucketOwnershipControls(
+            "FrontendBucketPublicOwnershipControls",
+            bucket=bucket.bucket,
+            rule=aws.s3.BucketOwnershipControlsRuleArgs(
+                object_ownership="ObjectWriter",
+            ),
+        )
+        aws.s3.BucketPublicAccessBlock(
+            "FrontendBucketPublicAccessBlock",
+            bucket=bucket.id,
+            block_public_acls=False,
+            block_public_policy=False,
+            ignore_public_acls=False,
+            restrict_public_buckets=False,
+        )
         self.s3_bucket = bucket
         return bucket
+
+    def attach_policies(self):
+        aws.s3.BucketPolicy(
+            "publicReadPolicy",
+            bucket=self.s3_bucket.id,
+            policy=self.create_s3_frontend_policy(),
+        )
 
     def render_config_to_s3_bucket(self, backend_uri):
         config_content = backend_uri.apply(lambda uri: json.dumps({"backendApiUrl": f"https://{uri}"}))
@@ -66,9 +88,13 @@ class Frontend:
                     sid="GithubActionsPutToFrontendBucket",
                     actions=[
                         "s3:PutObject",
+                        "s3:ListBucket",
                     ],
                     effect="Allow",
-                    resources=[f"arn:aws:s3:::{self.frontend_config.require('bucket_name')}/*"],
+                    resources=[
+                        f"arn:aws:s3:::{self.frontend_config.require('bucket_name')}",
+                        f"arn:aws:s3:::{self.frontend_config.require('bucket_name')}/*",
+                    ],
                 )
             ],
             policy_id="AmazonS3PutFrontendBucket",
